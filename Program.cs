@@ -1,8 +1,14 @@
 ﻿
 
+using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Utilities.IO;
 using Renci.SshNet;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,16 +30,58 @@ namespace NBKFiletransferTest
             string password = "";
             string remoteFilePath = @"C:\Users\Admin2\Downloads\Config.xml";
             string localFilePath = @"C:\Users\Admin2\Downloads\Config.xml";
+     
             try
             {
+             var paymentfilelocation = @"C:\Users\Admin2\Downloads\New folder\";
+                string[] filePaths = Directory.GetFiles(paymentfilelocation, "*.txt");
+                List<string> lst = filePaths.ToList();
+                foreach (var element in lst)
+                {
+                    //Console.WriteLine(element);
 
-                encryption(localFilePath, remoteFilePath);
-                SendPaymentFile(host, username, password, remoteFilePath, localFilePath, port);
-            }catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                    string fileName1 = element;
+                    string fileName = Path.GetFileName(fileName1);
+                    var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read);
+
+                    Logs.WriteLog("Encrypting file..");
+                    // encrypt the data using gpg
+
+                    PGPEncryptDecrypt pgp = new PGPEncryptDecrypt();
+                    //full path to file to encrypt
+                    string origfilePath = fileName;
+                    string origFilePath = Path.GetFileName(origfilePath);
+                    //folder to store encrypted file
+                    string encryptedFilePath = @"C:\Users\Admin2\Downloads\New folder\";
+                    //folder to store unencrypted file
+                    //   string unencryptedFilePath = GetConfigData("unencryptedFilePath");
+                    //path to public key file 
+                    string publicKeyFile =@"C:\Users\Admin2\Downloads\REDCROSS.asc";
+                    //string publicKeyFile = Path.GetFileName(publicKeyFilepath);
+                    //path to private key file (this file should be kept at client, AND in a secure place, far from prying eyes and tinkering hands)
+                    // string privateKeyFile = GetConfigData("privateKeyFile");
+                    //string privateKeyFile = Path.GetFileName(privateKeyFilepath);
+                    pgp.Encrypt(origFilePath, publicKeyFile, encryptedFilePath);
+                    // pgp.Decrypt(encryptedFilePath + "credentials.txt.asc", privateKeyFile, passPhrase, unencryptedFilePath);
+                    var directory = @"C:\Users\Admin2\Downloads\New folder\";
+                    var dir = new DirectoryInfo(directory);
+                    var lastModified = dir.GetFiles().OrderByDescending(fi => fi.LastWriteTime).First();
+                    var fullfilename = lastModified.FullName;
+                    //var encryptedFile = @"C:\Users\Admin2\Downloads\New folder\94424.txt.asc";
+                    var encryptedFile = Convert.ToString(fullfilename);
+
+                    SendPaymentFile(host, username, password, remoteFilePath, localFilePath, port);
+
+                }
+
             }
-
+            catch (Exception es)
+            {
+                Logs.WriteLog(es.Message);
+                Console.ReadLine();
+                //Logs.WriteLog(es.InnerException.ToString());
+            }
+            Console.ReadLine();
         }
         ///<summary>
         /// justus kasyoki- 4/03/2022.
@@ -43,65 +91,71 @@ namespace NBKFiletransferTest
         ///<param name="inputFile"></param>
         ///<param name="outputFile"></param>
 
-        private static void encryption(string localFilePath, string remoteFilePath)
-        {
-            try
-            {
-                string password = AppDomain.CurrentDomain.BaseDirectory + @"myKey123"; // Your Key Here
-                UnicodeEncoding UE = new UnicodeEncoding();
-                byte[] key = UE.GetBytes(password);
+        //private static void encryption()
+        //{
+        //    // encryption key for encryption/decryption 
+        //    byte[] key = { 0x02, 0x03, 0x01, 0x03, 0x03, 0x07, 0x07, 0x08, 0x09, 0x09, 0x11, 0x11, 0x16, 0x17, 0x19, 0x16 };
 
-                string cryptFile = remoteFilePath;
-                FileStream fsCrypt = new FileStream(cryptFile, FileMode.Create);
+        //    // ENCRYPT DATA
+        //    try
+        //    {
+        //        // create file stream
+        //        FileStream myStream = new FileStream(@"C:\Users\Admin2\Downloads\New folder\samplepaymentfile.txt.asc", FileMode.OpenOrCreate);
 
-                RijndaelManaged RMCrypto = new RijndaelManaged();
+        //        // configure encryption key.  
+        //        Aes aes = Aes.Create();
+        //        aes.Key = key;
 
-                CryptoStream cs = new CryptoStream(fsCrypt,
-                    RMCrypto.CreateEncryptor(key, key),
-                    CryptoStreamMode.Write);
+        //        // store IV
+        //        byte[] iv = aes.IV;
+        //        myStream.Write(iv, 0, iv.Length);
 
-                FileStream fsIn = new FileStream(localFilePath, FileMode.Open);
+        //        // encrypt filestream  
+        //         CryptoStream cryptStream = new CryptoStream(
+        //            myStream,
+        //            aes.CreateEncryptor(),
+        //            CryptoStreamMode.Write);
 
-                int data;
-                while ((data = fsIn.ReadByte()) != -1)
-                    cs.WriteByte((byte)data);
+        //        // write to filestream
+        //         StreamWriter sWriter = new StreamWriter(cryptStream);
+        //        string plainText = "Welcome to the lab of MrNetTek!";
+        //        sWriter.WriteLine(plainText);
 
+        //        // done 
+        //        Console.WriteLine("---SUCCESSFUL ENCRYPTION---\n");
 
-                fsIn.Close();
-                cs.Close();
-                fsCrypt.Close();
-            }
-            catch(Exception es)
-            {
-                Console.WriteLine("Encryption failed!", "Error");
-                Console.WriteLine(es.Message);
-                Console.ReadLine();
-            }
-        }
+        //    }
+        //    catch
+        //    {
+        //        // error  
+        //        Console.WriteLine("---ENCRYPTION FAILED---");
+        //        Console.ReadLine();
+        //        throw;
+        //    }
+
+        //    // SHOW ENCRYPTED DATA
+        //    try
+        //    {
+        //        string text = System.IO.File.ReadAllText(@"C:\Users\Admin2\Downloads\Config.xml");
+
+        //        // encrypted data
+        //        Console.WriteLine("Encrypted Data: {0}\n\n", text);
+
+        //        Console.WriteLine("Press any key to view decrypted data\n");
+        //        Console.ReadKey();
+        //    }
+        //    catch(Exception es)
+        //    {
+        //        Console.WriteLine(es.Message);
+        //        throw;
+        //    }
+        //}
 
 
         //Parameters for sending Payment File
         public static void SendPaymentFile(string host, string username, string password, string remoteFilePath, string localFilePath, int port)
         {
-            //try
-            //{
-            //    using (ScpClient client = new ScpClient(host, username, port))
-            //    {
-            //        client.Connect();
-
-            //        using (System.IO.Stream localFile = File.OpenRead(localFilePath))
-            //        {
-            //            client.Upload(localFile, remoteFilePath);
-            //        }
-
-            //    }
-            //    Console.WriteLine("Successfully connected to the client");
-            //    Console.ReadLine();
-            //}
-            //catch (Exception es)
-            //{
-            //    WriteLog(es.Message);
-            //}
+            
             try
             {
                 using (var client = new SftpClient(host, port, username, password))
@@ -126,37 +180,231 @@ namespace NBKFiletransferTest
             }
             catch (Exception es)
             {
-                WriteLog(es.Message);
+               Logs.WriteLog(es.Message);
             }
         }
-        public static void WriteLog(string text)
+     
+    }
+    /// <summary>
+    /// justus kasyoki 4/03/2022
+    /// 
+    /// encryption process
+    /// </summary>
+    public class PGPEncryptDecrypt
+    {
+
+        public PGPEncryptDecrypt()
         {
 
+        }
+
+        /**
+        * A simple routine that opens a key ring file and loads the first available key suitable for
+        * encryption.
+        *
+        * @param in
+        * @return
+        * @m_out
+        * @
+        */
+        private static PgpPublicKey ReadPublicKey(Stream inputStream)
+        {
+            inputStream = PgpUtilities.GetDecoderStream(inputStream);
+            PgpPublicKeyRingBundle pgpPub = new PgpPublicKeyRingBundle(inputStream);
+            //
+            // we just loop through the collection till we find a key suitable for encryption, in the real
+            // world you would probably want to be a bit smarter about this.
+            // iterate through the key rings.
+            //
+            foreach (PgpPublicKeyRing kRing in pgpPub.GetKeyRings())
+            {
+                foreach (PgpPublicKey k in kRing.GetPublicKeys())
+                {
+                    if (k.IsEncryptionKey)
+                    {
+                        return k;
+                    }
+                }
+            }
+            throw new ArgumentException("Can't find encryption key in key ring.");
+        }
+
+        /**
+        * Search a secret key ring collection for a secret key corresponding to
+        * keyId if it exists.
+        *
+        * @param pgpSec a secret key ring collection.
+        * @param keyId keyId we want.
+        * @param pass passphrase to decrypt secret key with.
+        * @return
+        */
+        private static PgpPrivateKey FindSecretKey(PgpSecretKeyRingBundle pgpSec, long keyId, char[] pass)
+        {
+            PgpSecretKey pgpSecKey = pgpSec.GetSecretKey(keyId);
+            if (pgpSecKey == null)
+            {
+                return null;
+            }
+            return pgpSecKey.ExtractPrivateKey(pass);
+        }
+
+        /**
+        * decrypt the passed in message stream
+        */
+        private static void DecryptFile(Stream inputStream, Stream keyIn, char[] passwd, string defaultFileName, string pathToSaveFile)
+        {
+            inputStream = PgpUtilities.GetDecoderStream(inputStream);
             try
             {
-                //set up a filestream
-                string strPath = @"C:\Logs\NBKFiletransfer";
-                string fileName = DateTime.Now.ToString("MMddyyyy") + "_logs.txt";
-                string filenamePath = strPath + '\\' + fileName;
-                Directory.CreateDirectory(strPath);
-                FileStream fs = new FileStream(filenamePath, FileMode.OpenOrCreate, System.IO.FileAccess.Write);
-                //set up a streamwriter for adding text
-                StreamWriter sw = new StreamWriter(fs);
-                //find the end of the underlying filestream
-                sw.BaseStream.Seek(0, SeekOrigin.End);
-                //add the text
-                sw.WriteLine(DateTime.Now.ToString() + " : " + text);
-                //add the text to the underlying filestream
-                sw.Flush();
-                //close the writer
-                sw.Close();
+                PgpObjectFactory pgpF = new PgpObjectFactory(inputStream);
+                PgpEncryptedDataList enc;
+                PgpObject o = pgpF.NextPgpObject();
+                //
+                // the first object might be a PGP marker packet.
+                //
+                if (o is PgpEncryptedDataList)
+                {
+                    enc = (PgpEncryptedDataList)o;
+                }
+                else
+                {
+                    enc = (PgpEncryptedDataList)pgpF.NextPgpObject();
+                }
+                //
+                // find the secret key
+                //
+                PgpPrivateKey sKey = null;
+                PgpPublicKeyEncryptedData pbe = null;
+                PgpSecretKeyRingBundle pgpSec = new PgpSecretKeyRingBundle(
+                PgpUtilities.GetDecoderStream(keyIn));
+                foreach (PgpPublicKeyEncryptedData pked in enc.GetEncryptedDataObjects())
+                {
+                    sKey = FindSecretKey(pgpSec, pked.KeyId, passwd);
+                    if (sKey != null)
+                    {
+                        pbe = pked;
+                        break;
+                    }
+                }
+                if (sKey == null)
+                {
+                    throw new ArgumentException("secret key for message not found.");
+                }
+                Stream clear = pbe.GetDataStream(sKey);
+                PgpObjectFactory plainFact = new PgpObjectFactory(clear);
+                PgpObject message = plainFact.NextPgpObject();
+                if (message is PgpCompressedData)
+                {
+                    PgpCompressedData cData = (PgpCompressedData)message;
+                    PgpObjectFactory pgpFact = new PgpObjectFactory(cData.GetDataStream());
+                    message = pgpFact.NextPgpObject();
+                }
+
+                if (message is PgpLiteralData)
+                {
+
+                    PgpLiteralData ld = (PgpLiteralData)message;
+                    string outFileName = ld.FileName;
+                    if (outFileName.Length == 0)
+                    {
+                        outFileName = defaultFileName;
+                    }
+
+                    Stream fOut = File.Create(pathToSaveFile + outFileName);
+                    Stream unc = ld.GetInputStream();
+                    Streams.PipeAll(unc, fOut);
+                    fOut.Close();
+                }
+                else if (message is PgpOnePassSignatureList)
+                {
+                    throw new PgpException("encrypted message contains a signed message - not literal data.");
+                }
+                else
+                {
+                    throw new PgpException("message is not a simple encrypted file - type unknown.");
+                }
+                if (pbe.IsIntegrityProtected())
+                {
+                    if (!pbe.Verify())
+                    {
+                        Logs.WriteLog("message failed integrity check");
+                    }
+                    else
+                    {
+                        Logs.WriteLog("message integrity check passed");
+                    }
+                }
+                else
+                {
+                    Logs.WriteLog("no message integrity check");
+                }
             }
-            catch (Exception ex)
+            catch (PgpException es)
             {
-                //throw;
-                ex.Data.Clear();
+                Logs.WriteLog(es.Message);
+                string innerEx = "";
+                if (es.InnerException != null)
+                    innerEx = es.InnerException.ToString();
             }
         }
+
+        private static void EncryptFile(Stream outputStream, string fileName, PgpPublicKey encKey, bool armor, bool withIntegrityCheck)
+        {
+
+            if (armor)
+            {
+                outputStream = new ArmoredOutputStream(outputStream);
+            }
+            try
+            {
+                MemoryStream bOut = new MemoryStream();
+                PgpCompressedDataGenerator comData = new PgpCompressedDataGenerator(
+                CompressionAlgorithmTag.Zip);
+                PgpUtilities.WriteFileToLiteralData(
+                comData.Open(bOut),
+                PgpLiteralData.Binary,
+                new FileInfo(fileName));
+                comData.Close();
+                PgpEncryptedDataGenerator cPk = new PgpEncryptedDataGenerator(
+                SymmetricKeyAlgorithmTag.Cast5, withIntegrityCheck, new SecureRandom());
+                cPk.AddMethod(encKey);
+                byte[] bytes = bOut.ToArray();
+                Stream cOut = cPk.Open(outputStream, bytes.Length);
+                cOut.Write(bytes, 0, bytes.Length);
+                cOut.Close();
+                if (armor)
+                {
+                    outputStream.Close();
+                }
+            }
+            catch (PgpException es)
+            {
+               Logs.WriteLog(es.Message);
+                string innerEx = "";
+                if (es.InnerException != null)
+                    innerEx = es.InnerException.ToString();
+
+            }
+        }
+        public void Encrypt(string filePath, string publicKeyFile, string pathToSaveFile)
+        {
+            Stream keyIn, fos;
+            keyIn = File.OpenRead(publicKeyFile);
+            string[] fileSplit = filePath.Split('\\');
+            string fileName = fileSplit[fileSplit.Length - 1];
+            fos = File.Create(pathToSaveFile + fileName + ".asc");
+            EncryptFile(fos, filePath, ReadPublicKey(keyIn), true, true);
+            keyIn.Close();
+            fos.Close();
+        }
+        public void Decrypt(string filePath, string privateKeyFile, string passPhrase, string pathToSaveFile)
+        {
+            Stream fin = File.OpenRead(filePath);
+            Stream keyIn = File.OpenRead(privateKeyFile);
+            DecryptFile(fin, keyIn, passPhrase.ToCharArray(), new FileInfo(filePath).Name + ".out", pathToSaveFile);
+            fin.Close();
+            keyIn.Close();
+        }
     }
- 
+
 }
