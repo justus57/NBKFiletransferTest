@@ -1,26 +1,85 @@
-﻿using Renci.SshNet;
+﻿
+
+using Renci.SshNet;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NBKFiletransferTest
 {
     class Program
     {
+        /// <summary>
+        /// justus kasyoki-4/03/2022
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             string host = "localhost";
             string username = "localhost";
             int port = 22;
             string password = "";
-            string remoteFilePath = "";
-            string localFilePath = "";
-            SendPaymentFile(host, username, password, remoteFilePath, localFilePath, port);
+            string remoteFilePath = @"C:\Users\Admin2\Downloads\Config.xml";
+            string localFilePath = @"C:\Users\Admin2\Downloads\Config.xml";
+            try
+            {
+
+                encryption(localFilePath, remoteFilePath);
+                SendPaymentFile(host, username, password, remoteFilePath, localFilePath, port);
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
-       
+        ///<summary>
+        /// justus kasyoki- 4/03/2022.
+        ///
+        /// Encrypts a file using Rijndael algorithm.
+        ///</summary>
+        ///<param name="inputFile"></param>
+        ///<param name="outputFile"></param>
+
+        private static void encryption(string localFilePath, string remoteFilePath)
+        {
+            try
+            {
+                string password = AppDomain.CurrentDomain.BaseDirectory + @"myKey123"; // Your Key Here
+                UnicodeEncoding UE = new UnicodeEncoding();
+                byte[] key = UE.GetBytes(password);
+
+                string cryptFile = remoteFilePath;
+                FileStream fsCrypt = new FileStream(cryptFile, FileMode.Create);
+
+                RijndaelManaged RMCrypto = new RijndaelManaged();
+
+                CryptoStream cs = new CryptoStream(fsCrypt,
+                    RMCrypto.CreateEncryptor(key, key),
+                    CryptoStreamMode.Write);
+
+                FileStream fsIn = new FileStream(localFilePath, FileMode.Open);
+
+                int data;
+                while ((data = fsIn.ReadByte()) != -1)
+                    cs.WriteByte((byte)data);
+
+
+                fsIn.Close();
+                cs.Close();
+                fsCrypt.Close();
+            }
+            catch(Exception es)
+            {
+                Console.WriteLine("Encryption failed!", "Error");
+                Console.WriteLine(es.Message);
+                Console.ReadLine();
+            }
+        }
+
+
         //Parameters for sending Payment File
         public static void SendPaymentFile(string host, string username, string password, string remoteFilePath, string localFilePath, int port)
         {
@@ -99,10 +158,5 @@ namespace NBKFiletransferTest
             }
         }
     }
-    public class encryption
-    {
-
-    }
-    
-
+ 
 }
