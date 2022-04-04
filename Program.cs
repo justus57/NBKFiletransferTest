@@ -26,11 +26,15 @@ namespace NBKFiletransferTest
         static void Main(string[] args)
         {
             string host = "172.16.19.24";
-            string username = "Redcross@172.16.19.24";
+            string username = "Redcross";
             int port = 22;
-            string password = "";
+            string password = "cross2022_test";
+
+
             string localFilePath = @"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile";
-          
+            string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
+            
+
             try
             {
                 Process cmd = new Process();
@@ -38,6 +42,7 @@ namespace NBKFiletransferTest
                 cmd.StartInfo.FileName = "cmd.exe";
                 cmd.StartInfo.RedirectStandardInput = true;
                 cmd.StartInfo.UseShellExecute = false;
+
 
                 cmd.Start();
 
@@ -53,9 +58,10 @@ namespace NBKFiletransferTest
                         sw.WriteLine(@"cd Downloads\EncyptionTool\EncyptionTool");
                        // sw.WriteLine("java -jar KeyGeneratorForEncryption.jar");
                         sw.WriteLine("java -jar FileEncryptor.jar");
+                        Logs.WriteLog("Encryption successful!");
                     }
                 }
-                SendPaymentFile(host, username, password, localFilePath, port);
+                SendPaymentFile(host, username, password, filePaths, port);
             }
             catch (Exception es)
             {
@@ -65,6 +71,12 @@ namespace NBKFiletransferTest
             }
             Console.ReadLine();
         }
+
+        private static void SendPaymentFile(string host, string username, string password, List<string> lst, int port)
+        {
+            throw new NotImplementedException();
+        }
+
         ///<summary>
         /// justus kasyoki- 4/03/2022.
         ///
@@ -73,7 +85,7 @@ namespace NBKFiletransferTest
         ///<param name="inputFile"></param>
         ///<param name="outputFile"></param>
 
-        public static void SendPaymentFile(string host, string username, string password, string localFilePath, int port)
+        public static void SendPaymentFile(string host, string username, string password, string[] filePaths, int port)
         {
             
             try
@@ -85,11 +97,11 @@ namespace NBKFiletransferTest
                     {
                         Console.WriteLine("I'm connected to the client");
 
-                        using (var fileStream = new FileStream(localFilePath, FileMode.Open))
+                        using (var fileStream = new FileStream(filePaths.ToString(), FileMode.Open))
                         {
 
                             client.BufferSize = 4 * 1024; // bypass Payload error large files
-                            client.UploadFile(fileStream, Path.GetFileName(localFilePath));
+                            client.UploadFile(fileStream, Path.GetFileName(filePaths.ToString()));
                         }
                     }
                     else
