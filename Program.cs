@@ -18,6 +18,15 @@ namespace NBKFiletransferTest
 {
     class Program
     {
+        public static string element { get; private set; }
+       
+        static string localFilePath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile");
+        static string destinationpath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\filesendToNBK");
+        static string backupdirectory = @"C:\Backup";
+
+
+        //public static string destinationpath { get; private set; }
+
         /// <summary>
         /// justus kasyoki-4/03/2022
         /// 
@@ -30,8 +39,6 @@ namespace NBKFiletransferTest
             int port = 22;
             string password = "cross2022_test";
 
-            string localFilePath = @"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile";
-            string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
 
             try
             {
@@ -58,7 +65,7 @@ namespace NBKFiletransferTest
                         Logs.WriteLog("Encryption successful!");
                     }
                 }
-                SendPaymentFile(host, username, password, filePaths, port);
+                SendPaymentFile(host, username, password, port);
             }
             catch (Exception es)
             {
@@ -77,7 +84,7 @@ namespace NBKFiletransferTest
         ///<param name="inputFile"></param>
         ///<param name="outputFile"></param>
 
-        public static void SendPaymentFile(string host, string username, string password, string[] filePaths, int port)
+        public static void SendPaymentFile(string host, string username, string password, int port)
         {
             try
             {
@@ -86,13 +93,43 @@ namespace NBKFiletransferTest
                     client.Connect();
                     if (client.IsConnected)
                     {
-                        Console.WriteLine("I'm connected to the client");
 
-                        using (var fileStream = new FileStream(filePaths.ToString(), FileMode.Open))
+                        Console.WriteLine("I'm connected to the client");
+                        string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
+                        List<string> lst = filePaths.ToList();
+                        foreach (var element in lst)
                         {
-                            client.BufferSize = 4 * 1024; // bypass Payload error large files
-                            client.UploadFile(fileStream, Path.GetFileName(filePaths.ToString()));
+
+                            using (var fileStream = new FileStream(element, FileMode.Open))
+                            {
+                                client.BufferSize = 4 * 1024; // bypass Payload error large files
+                                client.UploadFile(fileStream, Path.GetFileName(element));
+
+                            }
                         }
+                        //try
+                        //{
+                        //    if (Directory.Exists(localFilePath))
+                        //    {
+                        //        if (Directory.Exists(destinationpath))
+                        //        {
+                        //            //Directory.Delete(destinationdirectory);
+                        //            //Directory.Move(destinationpath, backupdirectory + DateTime.Now.ToString("_MMMdd_yyyy_HHmmss"));
+                        //            Directory.Move(localFilePath, destinationpath);
+                        //        }
+                        //        else
+                        //        {
+                        //            Directory.Move(localFilePath, destinationpath);
+                        //        }
+                        //    }
+
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    Console.WriteLine(ex.Message);
+                        //}
+
+
                     }
                     else
                     {
