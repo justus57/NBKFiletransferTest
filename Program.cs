@@ -30,10 +30,8 @@ namespace NBKFiletransferTest
             int port = 22;
             string password = "cross2022_test";
 
-
             string localFilePath = @"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile";
             string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
-            
 
             try
             {
@@ -42,7 +40,6 @@ namespace NBKFiletransferTest
                 cmd.StartInfo.FileName = "cmd.exe";
                 cmd.StartInfo.RedirectStandardInput = true;
                 cmd.StartInfo.UseShellExecute = false;
-
 
                 cmd.Start();
 
@@ -67,14 +64,9 @@ namespace NBKFiletransferTest
             {
                 Logs.WriteLog(es.Message);
                 Console.ReadLine();
-                //Logs.WriteLog(es.InnerException.ToString());
+               Logs.WriteLog(es.InnerException.ToString());
             }
             Console.ReadLine();
-        }
-
-        private static void SendPaymentFile(string host, string username, string password, List<string> lst, int port)
-        {
-            throw new NotImplementedException();
         }
 
         ///<summary>
@@ -87,7 +79,6 @@ namespace NBKFiletransferTest
 
         public static void SendPaymentFile(string host, string username, string password, string[] filePaths, int port)
         {
-            
             try
             {
                 using (var client = new SftpClient(host, port, username, password))
@@ -99,7 +90,6 @@ namespace NBKFiletransferTest
 
                         using (var fileStream = new FileStream(filePaths.ToString(), FileMode.Open))
                         {
-
                             client.BufferSize = 4 * 1024; // bypass Payload error large files
                             client.UploadFile(fileStream, Path.GetFileName(filePaths.ToString()));
                         }
@@ -117,8 +107,6 @@ namespace NBKFiletransferTest
         }
      
     }
-
-
 }  
 
 
