@@ -96,10 +96,11 @@ namespace NBKFiletransferTest
 
                         Console.WriteLine("I'm connected to the client");
                         string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
+                        
                         List<string> lst = filePaths.ToList();
                         foreach (var element in lst)
                         {
-
+                            File.Copy(element, destinationpath);
                             using (var fileStream = new FileStream(element, FileMode.Open))
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
