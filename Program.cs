@@ -1,5 +1,6 @@
 ﻿
 
+using Grpc.Core;
 using Org.BouncyCastle.Bcpg;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
@@ -21,8 +22,11 @@ namespace NBKFiletransferTest
         public static string element { get; private set; }
        
         static string localFilePath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile");
-        static string destinationpath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\filesendToNBK");
-        static string backupdirectory = @"C:\Backup";
+        static string destinationpath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\filesendToNBK\");
+        static string OriginalfilePathFromNav = Path.GetFullPath(@"C:\BTL");
+        static string inputfileEncryptor = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\InputFile\");
+
+        static string backupdirectory =Path.GetFullPath(@"C:\PaymentfileBackup\");
 
 
         //public static string destinationpath { get; private set; }
@@ -42,7 +46,31 @@ namespace NBKFiletransferTest
 
             try
             {
-                Process cmd = new Process();
+                try
+                {
+                    string[] filePathFromNav = Directory.GetFiles(OriginalfilePathFromNav, "*.xlsx");
+                    List<string> file1 = filePathFromNav.ToList();
+                    foreach (var source in file1)
+                    {
+                        var filename = Path.GetFileName(source);
+                        File.Copy(source, backupdirectory + filename);
+
+
+                    }
+                    List<string> file = filePathFromNav.ToList();
+                    foreach (var source in file)
+                    {
+                        var filename = Path.GetFileName(source);
+                        File.Copy(source, inputfileEncryptor + filename);
+                        File.Delete(source);
+                    }
+                }
+                catch (Exception es)
+                {
+                    Logs.WriteLog(es.Message);
+                }
+
+                    Process cmd = new Process();
 
                 cmd.StartInfo.FileName = "cmd.exe";
                 cmd.StartInfo.RedirectStandardInput = true;
@@ -93,20 +121,23 @@ namespace NBKFiletransferTest
                     client.Connect();
                     if (client.IsConnected)
                     {
-
+                        Console.WriteLine("**********************************");
                         Console.WriteLine("I'm connected to the client");
-                        string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
+                        string[] filePaths = Directory.GetFiles(localFilePath, "*.xlsx");
                         
                         List<string> lst = filePaths.ToList();
                         foreach (var element in lst)
                         {
-                            File.Copy(element, destinationpath);
+                            var filename = Path.GetFileName(element);
+                            File.Copy(element, destinationpath + filename);
                             using (var fileStream = new FileStream(element, FileMode.Open))
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
                                 client.UploadFile(fileStream, Path.GetFileName(element));
-
+                                Console.WriteLine("**********************************************");
+                                Console.WriteLine("File Uploaded successfully!");
                             }
+                            File.Delete(element);
                         }
                         //try
                         //{
