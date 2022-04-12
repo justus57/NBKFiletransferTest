@@ -139,29 +139,7 @@ namespace NBKFiletransferTest
                             }
                             File.Delete(element);
                         }
-                        //try
-                        //{
-                        //    if (Directory.Exists(localFilePath))
-                        //    {
-                        //        if (Directory.Exists(destinationpath))
-                        //        {
-                        //            //Directory.Delete(destinationdirectory);
-                        //            //Directory.Move(destinationpath, backupdirectory + DateTime.Now.ToString("_MMMdd_yyyy_HHmmss"));
-                        //            Directory.Move(localFilePath, destinationpath);
-                        //        }
-                        //        else
-                        //        {
-                        //            Directory.Move(localFilePath, destinationpath);
-                        //        }
-                        //    }
-
-                        //}
-                        //catch (Exception ex)
-                        //{
-                        //    Console.WriteLine(ex.Message);
-                        //}
-
-
+                       
                     }
                     else
                     {
