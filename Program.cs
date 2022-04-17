@@ -20,13 +20,21 @@ namespace NBKFiletransferTest
     class Program
     {
         public static string element { get; private set; }
-       
-        static string localFilePath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile");
-        static string destinationpath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\filesendToNBK\");
-        static string OriginalfilePathFromNav = Path.GetFullPath(@"C:\BTL");
-        static string inputfileEncryptor = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\InputFile\");
 
-        static string backupdirectory =Path.GetFullPath(@"C:\PaymentfileBackup\");
+        //static string localFilePath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile");
+        //static string destinationpath = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\filesendToNBK\");
+        //static string OriginalfilePathFromNav = Path.GetFullPath(@"C:\BTL");
+        //static string inputfileEncryptor = Path.GetFullPath(@"C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\InputFile\");
+
+        //static string backupdirectory =Path.GetFullPath(@"C:\PaymentfileBackup\");
+        static string path = AppDomain.CurrentDomain.BaseDirectory + @"\Config.xml";
+        static string localFilePath = Path.GetFullPath(Utility.GetConfigData("localFilePath"));
+        static string destinationpath = Path.GetFullPath(Utility.GetConfigData("destinationpath"));
+        static string inputfileEncryptor = Path.GetFullPath(Utility.GetConfigData("inputfileEncryptor"));
+        static string OriginalfilePathFromNav = Path.GetFullPath(Utility.GetConfigData("OriginalfilePathFromNav"));
+
+        static string backupdirectory = Path.GetFullPath(Utility.GetConfigData("backupdirectory"));
+
 
 
         //public static string destinationpath { get; private set; }
@@ -38,11 +46,15 @@ namespace NBKFiletransferTest
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            string host = "172.16.19.24";
-            string username = "Redcross";
-            int port = 22;
-            string password = "cross2022_test";
+            //    string host = "172.16.19.24";
+            //    string username = "Redcross";
+            //    int port = 22;
+            //    string password = "cross2022_test";
 
+            string host = Utility.GetConfigData("host");
+            string username = Utility.GetConfigData("Username");
+            int port = 22;
+            string password = Utility.GetConfigData("Password");
 
             try
             {

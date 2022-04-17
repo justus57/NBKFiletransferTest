@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+	<host>172.16.19.24</host>
+	<Username>Redcross</Username>
+	<Password>cross2022_test</Password>
+	<port>22</port>
+	<localFilePath>C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\OutputFile</localFilePath>
+	<destinationpath>C:\Users\Admin2\Downloads\EncyptionTool\filesendToNBK\</destinationpath>
+	<inputfileEncryptor>C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool\InputFile\</inputfileEncryptor>
+	<backupdirectory>C:\PaymentfileBackup\</backupdirectory>
+	<OriginalfilePathFromNav>C:\BTL</OriginalfilePathFromNav>
+	<ServiceTimerInterval>40000</ServiceTimerInterval>
+</Settings>
