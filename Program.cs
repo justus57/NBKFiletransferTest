@@ -34,7 +34,9 @@ namespace NBKFiletransferTest
         /// the main class the entry point a C# program from where the execution starts. 
         /// 
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">For accepting the zero-indexed command line arguments. 
+        /// args is the user-defined name. So you can change it by a valid identifier.
+        /// [] must come before the args otherwise compiler will give errors.</param>
         static void Main(string[] args)
         {
             string host = Utility.GetConfigData("host");
@@ -102,14 +104,15 @@ namespace NBKFiletransferTest
             Console.ReadLine();
         }
 
+
         ///<summary>
         /// justus kasyoki- 4/03/2022.
         ///
-        /// Encrypts a file using Rijndael algorithm.
-        ///</summary>
-        ///<param name="inputFile"></param>
-        ///<param name="outputFile"></param>
-
+        /// </summary>
+        /// <param name="host">this is the ip address to use</param>
+        /// <param name="username">input for the current username</param>
+        /// <param name="password">security code</param>
+        /// <param name="port">default fstp port which is 22</param>
         public static void SendPaymentFile(string host, string username, string password, int port)
         {
             try
