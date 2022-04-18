@@ -70,12 +70,10 @@ namespace NBKFiletransferTest
                     Logs.WriteLog(es.Message);
                 }
 
-                    Process cmd = new Process();
-
+                Process cmd = new Process();
                 cmd.StartInfo.FileName = "cmd.exe";
                 cmd.StartInfo.RedirectStandardInput = true;
                 cmd.StartInfo.UseShellExecute = false;
-
                 cmd.Start();
 
                 using (StreamWriter sw = cmd.StandardInput)
@@ -88,7 +86,7 @@ namespace NBKFiletransferTest
                         sw.WriteLine("cd ..");
                         sw.WriteLine("cd ..");
                         sw.WriteLine(@"cd Downloads\EncyptionTool\EncyptionTool");
-                       // sw.WriteLine("java -jar KeyGeneratorForEncryption.jar");
+                        // sw.WriteLine("java -jar KeyGeneratorForEncryption.jar");
                         sw.WriteLine("java -jar FileEncryptor.jar");
                         Logs.WriteLog("Encryption successful!");
                     }
@@ -98,8 +96,6 @@ namespace NBKFiletransferTest
             catch (Exception es)
             {
                 Logs.WriteLog(es.Message);
-                Console.ReadLine();
-               Logs.WriteLog(es.InnerException.ToString());
             }
             Console.ReadLine();
         }
@@ -123,19 +119,27 @@ namespace NBKFiletransferTest
                     if (client.IsConnected)
                     {
                         Console.WriteLine("**********************************");
+
                         Console.WriteLine("I'm connected to the client");
+
                         string[] filePaths = Directory.GetFiles(localFilePath, "*.xlsx");
                         
                         List<string> lst = filePaths.ToList();
+
                         foreach (var element in lst)
                         {
                             var filename = Path.GetFileName(element);
+
                             File.Copy(element, destinationpath + filename);
+
                             using (var fileStream = new FileStream(element, FileMode.Open))
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
+
                                 client.UploadFile(fileStream, Path.GetFileName(element));
+
                                 Console.WriteLine("**********************************************");
+
                                 Console.WriteLine("File Uploaded successfully!");
                             }
                             File.Delete(element);
@@ -145,6 +149,7 @@ namespace NBKFiletransferTest
                     else
                     {
                         Console.WriteLine("I couldn't connect");
+                        Logs.WriteLog("I couldn't connect");
                     }
                 }
             }
