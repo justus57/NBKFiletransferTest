@@ -46,51 +46,6 @@ namespace NBKFiletransferTest
 
             try
             {
-                try
-                {
-                    string[] filePathFromNav = Directory.GetFiles(OriginalfilePathFromNav, "*.xlsx");
-                    List<string> file1 = filePathFromNav.ToList();
-                    foreach (var source in file1)
-                    {
-                        var filename = Path.GetFileName(source);
-                        File.Copy(source, backupdirectory + filename);
-
-
-                    }
-                    List<string> file = filePathFromNav.ToList();
-                    foreach (var source in file)
-                    {
-                        var filename = Path.GetFileName(source);
-                        File.Copy(source, inputfileEncryptor + filename);
-                        File.Delete(source);
-                    }
-                }
-                catch (Exception es)
-                {
-                    Logs.WriteLog(es.Message);
-                }
-
-                Process cmd = new Process();
-                cmd.StartInfo.FileName = "cmd.exe";
-                cmd.StartInfo.RedirectStandardInput = true;
-                cmd.StartInfo.UseShellExecute = false;
-                cmd.Start();
-
-                using (StreamWriter sw = cmd.StandardInput)
-                {
-                    if (sw.BaseStream.CanWrite)
-                    {
-                        sw.WriteLine("cd ..");
-                        sw.WriteLine("cd ..");
-                        sw.WriteLine("cd ..");
-                        sw.WriteLine("cd ..");
-                        sw.WriteLine("cd ..");
-                        sw.WriteLine(@"cd Downloads\EncyptionTool\EncyptionTool");
-                        // sw.WriteLine("java -jar KeyGeneratorForEncryption.jar");
-                        sw.WriteLine("java -jar FileEncryptor.jar");
-                        Logs.WriteLog("Encryption successful!");
-                    }
-                }
                 SendPaymentFile(host, username, password, port);
             }
             catch (Exception es)
