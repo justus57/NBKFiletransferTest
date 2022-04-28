@@ -77,7 +77,7 @@ namespace NBKFiletransferTest
 
                         Console.WriteLine("I'm connected to the client");
 
-                        string[] filePaths = Directory.GetFiles(inputfileEncryptor, "*.xlsx");
+                        string[] filePaths = Directory.GetFiles(localFilePath, "*.xlsx");
                         
                         List<string> lst = filePaths.ToList();
 
@@ -93,6 +93,7 @@ namespace NBKFiletransferTest
                                 client.GetType();
                                 client.UploadFile(fileStream, Path.GetFileName(element));
                                 Console.WriteLine("**********************************************");
+
                                 Console.WriteLine("File Uploaded successfully!");
                             }
                             File.Delete(element);
