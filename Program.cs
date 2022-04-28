@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -68,13 +69,14 @@ namespace NBKFiletransferTest
         {
             try
             {
+                var ftpClient = new WebClient();
+                ftpClient.Headers.Add(HttpRequestHeader.ContentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                ftpClient.Credentials = new NetworkCredential(username, password);
                 using (var client = new SftpClient(host, port, username, password))
                 {
                     client.Connect();
                     if (client.IsConnected)
                     {
-                        Console.WriteLine("**********************************");
-
                         Console.WriteLine("I'm connected to the client");
 
                         string[] filePaths = Directory.GetFiles(localFilePath, "*.xlsx");
@@ -86,14 +88,14 @@ namespace NBKFiletransferTest
                             var filename = Path.GetFileName(element);
 
                             File.Copy(element, destinationpath + filename);
-
+                            
                             using (var fileStream = new FileStream(element, FileMode.Open,FileAccess.Read))
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
                                 client.GetType();
+                               
                                 client.UploadFile(fileStream, Path.GetFileName(element));
-                                Console.WriteLine("**********************************************");
-
+                               
                                 Console.WriteLine("File Uploaded successfully!");
                             }
                             File.Delete(element);
