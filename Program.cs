@@ -77,7 +77,7 @@ namespace NBKFiletransferTest
 
                         Console.WriteLine("I'm connected to the client");
 
-                        string[] filePaths = Directory.GetFiles(localFilePath, "*.xlsx");
+                        string[] filePaths = Directory.GetFiles(inputfileEncryptor, "*.xlsx");
                         
                         List<string> lst = filePaths.ToList();
 
@@ -87,10 +87,10 @@ namespace NBKFiletransferTest
 
                             File.Copy(element, destinationpath + filename);
 
-                            using (var fileStream = new FileStream(element, FileMode.Open))
+                            using (var fileStream = new FileStream(element, FileMode.Open,FileAccess.Read))
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
-
+                                client.GetType();
                                 client.UploadFile(fileStream, Path.GetFileName(element));
 
                                 Console.WriteLine("**********************************************");
