@@ -74,8 +74,7 @@ namespace NBKFiletransferTest
                             Response = "Encryption successful!";
                         }
                     }
-
-                }
+               }
                 catch (Exception ex)
                 {
                     Utility.WriteLog(ex.Message);
