@@ -105,6 +105,7 @@ namespace NBKFiletransferTest
                 var ftpClient = new WebClient();
                 ftpClient.Headers.Add(HttpRequestHeader.ContentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 ftpClient.Credentials = new NetworkCredential(username, password);
+
                 using (var client = new SftpClient(host, port, username, password))
                 {
                     client.Connect();
