@@ -126,10 +126,7 @@ namespace NBKFiletransferTest
                             using (var fileStream = new FileStream(element, FileMode.Open,FileAccess.Read))
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
-                                client.GetType();
-                               
                                 client.UploadFile(fileStream, Path.GetFileName(element));
-                               
                                 Console.WriteLine("File Uploaded successfully!");
                             }
                             File.Delete(element);
