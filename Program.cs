@@ -28,8 +28,6 @@ namespace NBKFiletransferTest
         static string OriginalfilePathFromNav = Path.GetFullPath(Utility.GetConfigData("OriginalfilePathFromNav"));
         static string backupdirectory = Path.GetFullPath(Utility.GetConfigData("backupdirectory"));
 
-        //public static string destinationpath { get; private set; }
-
         /// <summary>
         /// justus kasyoki-4/03/2022
         /// the main class the entry point a C# program from where the execution starts. 
