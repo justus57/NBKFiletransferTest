@@ -27,11 +27,7 @@ namespace NBKFiletransferTest
         static string inputfileEncryptor = Path.GetFullPath(Utility.GetConfigData("inputfileEncryptor"));
         static string OriginalfilePathFromNav = Path.GetFullPath(Utility.GetConfigData("OriginalfilePathFromNav"));
         static string backupdirectory = Path.GetFullPath(Utility.GetConfigData("backupdirectory"));
-
-        /// <summary>
-        /// justus kasyoki-4/03/2022
-        /// the main class the entry point a C# program from where the execution starts. 
-        /// 
+    
         /// </summary>
         /// <param name="args">For accepting the zero-indexed command line arguments. 
         /// args is the user-defined name. So you can change it by a valid identifier.
