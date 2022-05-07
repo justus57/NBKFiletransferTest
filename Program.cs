@@ -41,39 +41,39 @@ namespace NBKFiletransferTest
             string Response = null;
             try
             {
-                try
-                {
-                    ///perform encryption using cmd  usin g the encyrptor
-                    Process cmd = new Process();
-                    cmd.StartInfo.FileName = "cmd.exe";
-                    cmd.StartInfo.RedirectStandardInput = true;
-                    cmd.StartInfo.UseShellExecute = false;
-                    cmd.Start();
-                    using (StreamWriter sw = cmd.StandardInput)
-                    {
-                        Utility.WriteLog("Encryptioning......");
-                        if (sw.BaseStream.CanWrite)
-                        {
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine("cd ..");
-                            sw.WriteLine(@"cd C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool");
-                            // sw.WriteLine("java -jar KeyGeneratorForEncryption.jar");
-                            sw.WriteLine("java -jar FileEncryptor.jar");
-                            Utility.WriteLog("Encryption successful!");
-                            Response = "Encryption successful!";
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Utility.WriteLog(ex.Message);
-                    Response = "Encryption Unsuccessful!";
-                }
+                //try
+                //{
+                //    ///perform encryption using cmd  usin g the encyrptor
+                //    Process cmd = new Process();
+                //    cmd.StartInfo.FileName = "cmd.exe";
+                //    cmd.StartInfo.RedirectStandardInput = true;
+                //    cmd.StartInfo.UseShellExecute = false;
+                //    cmd.Start();
+                //    using (StreamWriter sw = cmd.StandardInput)
+                //    {
+                //        Utility.WriteLog("Encryptioning......");
+                //        if (sw.BaseStream.CanWrite)
+                //        {
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine("cd ..");
+                //            sw.WriteLine(@"cd C:\Users\Admin2\Downloads\EncyptionTool\EncyptionTool");
+                //            // sw.WriteLine("java -jar KeyGeneratorForEncryption.jar");
+                //            sw.WriteLine("java -jar FileEncryptor.jar");
+                //            Utility.WriteLog("Encryption successful!");
+                //            Response = "Encryption successful!";
+                //        }
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    Utility.WriteLog(ex.Message);
+                //    Response = "Encryption Unsuccessful!";
+                //}
                 SendPaymentFile(host, username, password, port);
             }
             catch (Exception es)
@@ -107,7 +107,7 @@ namespace NBKFiletransferTest
                     {
                         Console.WriteLine("I'm connected to the client");
 
-                        string[] filePaths = Directory.GetFiles(localFilePath, "*.xlsx");
+                        string[] filePaths = Directory.GetFiles(inputfileEncryptor, "*.xlsx");
                         
                         List<string> lst = filePaths.ToList();
 
