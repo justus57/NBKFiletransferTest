@@ -107,8 +107,8 @@ namespace NBKFiletransferTest
                     {
                         Console.WriteLine("I'm connected to the client");
 
-                        string[] filePaths = Directory.GetFiles(inputfileEncryptor, "*.xlsx");
-                        
+                        //string[] filePaths = Directory.GetFiles(inputfileEncryptor, "*.xlsx");
+                        string[] filePaths = Directory.GetFiles(inputfileEncryptor, "*.txt");
                         List<string> lst = filePaths.ToList();
 
                         foreach (var element in lst)
