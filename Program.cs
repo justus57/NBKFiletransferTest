@@ -108,7 +108,6 @@ namespace NBKFiletransferTest
                         Console.WriteLine("I'm connected to the client");
                         string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
                         List<string> lst = filePaths.ToList();
-
                         foreach (var element in lst)
                         {
                             var filename = Path.GetFileName(element);
@@ -122,7 +121,6 @@ namespace NBKFiletransferTest
                             }
                           File.Delete(element);
                         }
-                       
                     }
                     else
                     {
