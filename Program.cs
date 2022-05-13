@@ -97,7 +97,7 @@ namespace NBKFiletransferTest
             try
             {
                 var ftpClient = new WebClient();
-                ftpClient.Headers.Add(HttpRequestHeader.ContentType, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                ftpClient.Headers.Add(HttpRequestHeader.ContentType, "application/txt");
                 ftpClient.Credentials = new NetworkCredential(username, password);
 
                 using (var client = new SftpClient(host, port, username, password))
@@ -119,7 +119,7 @@ namespace NBKFiletransferTest
                             {
                                 client.BufferSize = 4 * 1024; // bypass Payload error large files
                                 client.UploadFile(fileStream, Path.GetFileName(element));
-                                 File.Copy(element, destinationpath + filename);
+                                File.Copy(element, destinationpath + filename);
                                 Console.WriteLine("File Uploaded successfully!");
                             }
                           File.Delete(element);
