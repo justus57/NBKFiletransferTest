@@ -128,6 +128,7 @@ namespace NBKFiletransferTest
                     else
                     {
                         Console.WriteLine("I couldn't connect");
+
                         Logs.WriteLog("I couldn't connect");
                     }
                 }
