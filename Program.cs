@@ -103,11 +103,15 @@ namespace NBKFiletransferTest
                 using (var client = new SftpClient(host, port, username, password))
                 {
                     client.Connect();
+
                     if (client.IsConnected)
                     {
                         Console.WriteLine("I'm connected to the client");
+
                         string[] filePaths = Directory.GetFiles(localFilePath, "*.txt");
+
                         List<string> lst = filePaths.ToList();
+
                         foreach (var element in lst)
                         {
                             var filename = Path.GetFileName(element);
