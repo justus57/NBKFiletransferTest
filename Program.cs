@@ -97,7 +97,9 @@ namespace NBKFiletransferTest
             try
             {
                 var ftpClient = new WebClient();
+
                 ftpClient.Headers.Add(HttpRequestHeader.ContentType, "application/txt");
+
                 ftpClient.Credentials = new NetworkCredential(username, password);
 
                 using (var client = new SftpClient(host, port, username, password))
