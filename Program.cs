@@ -35,9 +35,13 @@ namespace NBKFiletransferTest
         static void Main(string[] args)
         {
             string host = Utility.GetConfigData("host");
+
             string username = Utility.GetConfigData("Username");
+
             int port = 22;
+
             string password = Utility.GetConfigData("Password");
+
             string Response = null;
             try
             {
