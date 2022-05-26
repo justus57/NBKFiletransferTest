@@ -142,7 +142,6 @@ namespace NBKFiletransferTest
                 Logs.WriteLog(es.Message);
             }
         }
-     
     }
 }  
 
